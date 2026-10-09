@@ -23,7 +23,7 @@ Redis no se usa en este entorno: la caché de la carta queda en memoria (`CACHE_
      (ej. `jdbc:postgresql://aws-0-us-east-1.pooler.supabase.com:5432/postgres?sslmode=require`)
    - `DATABASE_USER` = el usuario que aparece, con el formato `postgres.<project-ref>`
    - `DATABASE_PASSWORD` = la contraseña del paso 1
-3. **Bucket de fotos** → **Storage** → **New bucket** → nombre `photos`, **privado** (el backend las sirve).
+3. **Bucket de fotos** → **Storage** → **New bucket** → nombre `photo`, **privado** (el backend las sirve).
 4. **Credenciales S3** → **Storage** → **S3 Configuration** (o *Settings → Storage*):
    - `S3_ENDPOINT` = el *Endpoint* (ej. `https://<project-ref>.storage.supabase.co/storage/v1/s3`)
    - `S3_REGION` = la *Region* (ej. `us-east-1`)

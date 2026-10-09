@@ -28,7 +28,7 @@ services:
       - key: DB_POOL_SIZE
         value: "5"
       - key: S3_BUCKET
-        value: photos
+        value: photo
       - key: S3_ENDPOINT
         sync: false
       - key: S3_REGION
