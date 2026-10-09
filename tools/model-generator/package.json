@@ -1,0 +1,20 @@
+{
+  "name": "platter-model-generator",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Genera procedimentalmente los modelos GLB de la biblioteca 3D de Platter (escala real, metros).",
+  "scripts": {
+    "build": "node src/generate.js",
+    "verify": "node src/verify.js"
+  },
+  "dependencies": {
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/extensions": "^4.5.1",
+    "@gltf-transform/functions": "^4.5.1",
+    "draco3dgltf": "^1.5.7"
+  },
+  "devDependencies": {
+    "gltf-validator": "^2.0.0-dev.3.10"
+  }
+}

@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="es-PE">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Platter · Tu carta en Realidad Aumentada, creada con una foto</title>
+  <meta name="description" content="Platter digitaliza la carta de tu restaurante: tus clientes escanean el QR de la mesa y ven cada plato en 3D, a tamaño real, sobre su mesa. Sin apps ni registro. Planes desde S/ 49 al mes.">
+  <meta property="og:title" content="Platter · Tu carta en Realidad Aumentada">
+  <meta property="og:description" content="Carta digital con platos en 3D a escala real para restaurantes MYPE del Perú. Créala con una foto.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_PE">
+  <meta name="theme-color" content="#FBF4EA">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23C2562F'/%3E%3Ccircle cx='32' cy='32' r='19' fill='%23FBF4EA'/%3E%3Ccircle cx='32' cy='32' r='11' fill='%231F4D3A'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js"></script>
+  <script type="module" src="/main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <header class="site-header" id="top">
+    <div class="container site-header__inner">
+      <a class="logo" href="/" aria-label="Platter, inicio">
+        <svg aria-hidden="true" viewBox="0 0 64 64" width="32" height="32"><circle cx="32" cy="32" r="30" fill="var(--terracotta)"/><circle cx="32" cy="32" r="19" fill="var(--cream)"/><circle cx="32" cy="32" r="11" fill="var(--green)"/></svg>
+        <span>Platter</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="siteNav" aria-label="Abrir menú">
+        <svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <nav class="site-nav" id="siteNav" aria-label="Principal">
+        <a href="#demo">Demo</a>
+        <a href="#como-funciona">Cómo funciona</a>
+        <a href="#beneficios">Beneficios</a>
+        <a href="#planes">Planes</a>
+        <a class="btn btn--primary btn--sm" href="#piloto">Solicitar piloto</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <!-- HERO + DEMO (US01) -->
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="container hero__grid">
+        <div class="hero__copy">
+          <p class="eyebrow">Para restaurantes MYPE del Perú</p>
+          <h1 id="heroTitle">Tu carta en <em>Realidad Aumentada</em>, creada con una foto</h1>
+          <p class="lead">Tus clientes escanean el QR de su mesa y ven cada plato en 3D, <strong>a tamaño real, sobre su propia mesa</strong>. Sin instalar apps, sin registrarse. Tú solo tomas una foto: la IA arma la ficha con ingredientes y alérgenos.</p>
+          <div class="hero__cta">
+            <a class="btn btn--primary btn--lg" href="#piloto">Solicitar piloto gratis</a>
+            <a class="btn btn--ghost btn--lg" href="/m/demo">Ver carta de demostración</a>
+          </div>
+          <ul class="hero__points">
+            <li><span aria-hidden="true">✓</span> Lista en minutos, desde tu celular</li>
+            <li><span aria-hidden="true">✓</span> Filtro de alérgenos para tus comensales</li>
+            <li><span aria-hidden="true">✓</span> Desde S/ 49 al mes</li>
+          </ul>
+        </div>
+
+        <div class="demo card" id="demo" aria-labelledby="demoTitle">
+          <div class="demo__head">
+            <h2 id="demoTitle" class="demo__title">Pruébalo ahora</h2>
+            <span class="demo__dims" id="demoDims" aria-live="polite"></span>
+          </div>
+          <div class="demo__viewer">
+            <model-viewer id="demoViewer"
+              src="/api/v1/assets/models/lomo-saltado.glb"
+              alt="Modelo 3D de un plato a escala real"
+              ar ar-modes="webxr scene-viewer quick-look" ar-scale="fixed" ar-placement="floor"
+              camera-controls touch-action="pan-y" shadow-intensity="1" shadow-softness="0.8"
+              camera-orbit="25deg 62deg auto" auto-rotate rotation-per-second="18deg" auto-rotate-delay="1500"
+              interaction-prompt="none" loading="eager">
+              <button slot="ar-button" class="btn btn--primary demo__ar" type="button">
+                <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3zm0 0v9m0 0l8-4.5M12 12l-8-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                Ver en mi mesa
+              </button>
+            </model-viewer>
+          </div>
+          <div class="demo__switcher" id="modelSwitcher" role="group" aria-label="Elegir plato de ejemplo"></div>
+          <div class="demo__qr" id="demoQr">
+            <div class="demo__qr-code" id="qrCode" role="img" aria-label="Código QR hacia la carta de demostración"></div>
+            <div>
+              <p class="demo__qr-title">Escanea este QR con tu celular</p>
+              <p class="muted small">Abre la carta de demostración y proyecta los platos sobre tu mesa con Realidad Aumentada.</p>
+            </div>
+          </div>
+          <p class="demo__note muted small" id="demoNote">Gira el plato con el dedo o el mouse. En celulares compatibles, toca <strong>Ver en mi mesa</strong>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CÓMO FUNCIONA -->
+    <section class="section" id="como-funciona" aria-labelledby="howTitle">
+      <div class="container">
+        <p class="eyebrow">Cómo funciona</p>
+        <h2 id="howTitle" class="section__title">De la foto a la mesa en 3 pasos</h2>
+        <ol class="steps">
+          <li class="step card">
+            <span class="step__num" aria-hidden="true">1</span>
+            <div class="step__icon" aria-hidden="true">📸</div>
+            <h3>Toma una foto</h3>
+            <p>Fotografía tu plato con el celular, tal como lo sirves. No necesitas fotógrafo ni equipo especial.</p>
+          </li>
+          <li class="step card">
+            <span class="step__num" aria-hidden="true">2</span>
+            <div class="step__icon" aria-hidden="true">✨</div>
+            <h3>La IA arma la ficha</h3>
+            <p>Sugiere nombre, descripción, ingredientes, alérgenos y calorías, y asigna un modelo 3D a escala real. Tú revisas y publicas.</p>
+          </li>
+          <li class="step card">
+            <span class="step__num" aria-hidden="true">3</span>
+            <div class="step__icon" aria-hidden="true">🔳</div>
+            <h3>QR en cada mesa</h3>
+            <p>Imprime los códigos QR de tus mesas. Tus clientes escanean, filtran alérgenos y ven el plato sobre su mesa.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- BENEFICIOS / ROI (US02) -->
+    <section class="section section--tinted" id="beneficios" aria-labelledby="benefitsTitle">
+      <div class="container">
+        <p class="eyebrow">Beneficios</p>
+        <h2 id="benefitsTitle" class="section__title">Que tus clientes vean lo que piden</h2>
+        <div class="benefits">
+          <article class="benefit card">
+            <div class="benefit__icon" aria-hidden="true">🍽️</div>
+            <h3>Platos que se ven antes de pedirse</h3>
+            <p>El comensal ve tamaño y porción reales sobre su mesa: menos dudas, decisiones más rápidas y platos nuevos que se animan a probar.</p>
+          </article>
+          <article class="benefit card">
+            <div class="benefit__icon" aria-hidden="true">🛡️</div>
+            <h3>Alérgenos claros</h3>
+            <p>Cada plato declara sus alérgenos y notas de cocina. Tus clientes filtran “sin gluten” o “sin mariscos” en un toque.</p>
+          </article>
+          <article class="benefit card">
+            <div class="benefit__icon" aria-hidden="true">📱</div>
+            <h3>Sin apps ni registro</h3>
+            <p>Funciona en el navegador del celular. Escanear y ver el plato en tu mesa toma como máximo dos toques.</p>
+          </article>
+          <article class="benefit card">
+            <div class="benefit__icon" aria-hidden="true">📊</div>
+            <h3>Datos para decidir</h3>
+            <p>Conoce qué platos se miran más, cuántas veces se usa la Realidad Aumentada y qué mesas escanean más.</p>
+          </article>
+        </div>
+
+        <div class="roi card" aria-labelledby="roiTitle">
+          <div class="roi__head">
+            <h3 id="roiTitle">Lo que buscamos comprobar en el piloto</h3>
+            <span class="tag">Hipótesis del proyecto · no son resultados</span>
+          </div>
+          <dl class="roi__stats">
+            <div><dt>hasta 2–3×</dt><dd>más conversión en platos vistos en AR frente a solo foto <span class="muted">(hipótesis del piloto)</span></dd></div>
+            <div><dt>≤ 2 toques</dt><dd>desde escanear el QR hasta ver el plato en la mesa <span class="muted">(meta de diseño)</span></dd></div>
+            <div><dt>&lt; 10 min</dt><dd>para publicar un plato con foto + IA <span class="muted">(meta del piloto)</span></dd></div>
+          </dl>
+          <p class="muted small">Cifras ilustrativas basadas en la hipótesis del proyecto académico Platter (UPC). Se medirán con restaurantes reales durante el piloto y publicaremos los resultados.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PLANES (US03) -->
+    <section class="section" id="planes" aria-labelledby="plansTitle">
+      <div class="container">
+        <p class="eyebrow">Planes</p>
+        <h2 id="plansTitle" class="section__title">Precios simples, en soles</h2>
+        <p class="section__lead">Sin permanencia. Todos los planes incluyen carta en Realidad Aumentada, códigos QR por mesa y filtro de alérgenos.</p>
+        <div class="plans" id="plansGrid" aria-live="polite"></div>
+
+        <div class="calc card" aria-labelledby="calcTitle">
+          <div class="calc__form">
+            <h3 id="calcTitle">¿Qué plan te conviene?</h3>
+            <label for="calcTables">¿Cuántas mesas tiene tu local?</label>
+            <div class="calc__input">
+              <button type="button" class="icon-btn" data-step="-1" aria-label="Quitar una mesa">−</button>
+              <input id="calcTables" type="number" inputmode="numeric" min="1" max="500" value="12" aria-describedby="calcResult">
+              <button type="button" class="icon-btn" data-step="1" aria-label="Agregar una mesa">+</button>
+            </div>
+          </div>
+          <div class="calc__result" id="calcResult" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PILOTO (US04) -->
+    <section class="section section--dark" id="piloto" aria-labelledby="pilotTitle">
+      <div class="container pilot">
+        <div class="pilot__copy">
+          <p class="eyebrow eyebrow--light">Piloto gratuito</p>
+          <h2 id="pilotTitle" class="section__title">Prueba Platter en tu restaurante</h2>
+          <p>Déjanos tus datos y te enviaremos el acceso para crear tu carta en Realidad Aumentada. Te acompañamos en la configuración de tus mesas y tus primeros platos.</p>
+          <ul class="pilot__list">
+            <li>Sin tarjeta de crédito</li>
+            <li>Te ayudamos a configurar tus mesas y QR</li>
+            <li>Tus datos solo se usan para contactarte</li>
+          </ul>
+        </div>
+        <form class="pilot__form card" id="leadForm" novalidate>
+          <div class="field">
+            <label for="restaurantName">Nombre del restaurante</label>
+            <input id="restaurantName" name="restaurantName" type="text" autocomplete="organization" required maxlength="120" aria-describedby="restaurantName-err">
+            <p class="field__error" id="restaurantName-err" aria-live="polite"></p>
+          </div>
+          <div class="field">
+            <label for="contactName">Tu nombre</label>
+            <input id="contactName" name="contactName" type="text" autocomplete="name" required maxlength="120" aria-describedby="contactName-err">
+            <p class="field__error" id="contactName-err" aria-live="polite"></p>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="email">Correo electrónico</label>
+              <input id="email" name="email" type="email" autocomplete="email" required maxlength="160" aria-describedby="email-err">
+              <p class="field__error" id="email-err" aria-live="polite"></p>
+            </div>
+            <div class="field">
+              <label for="phone">Celular / WhatsApp</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required placeholder="987 654 321" maxlength="20" aria-describedby="phone-err">
+              <p class="field__error" id="phone-err" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="tables">Número de mesas</label>
+            <input id="tables" name="tables" type="number" inputmode="numeric" min="1" max="500" required aria-describedby="tables-err">
+            <p class="field__error" id="tables-err" aria-live="polite"></p>
+          </div>
+          <p class="form__error" id="formError" role="alert"></p>
+          <button class="btn btn--primary btn--lg btn--block" type="submit" id="leadSubmit">Solicitar mi piloto</button>
+          <p class="muted small">Al enviar aceptas que te contactemos sobre Platter. No compartimos tus datos.</p>
+          <div class="form__success" id="leadSuccess" role="status" tabindex="-1" hidden></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" aria-labelledby="faqTitle">
+      <div class="container container--narrow">
+        <p class="eyebrow">Preguntas frecuentes</p>
+        <h2 id="faqTitle" class="section__title">Antes de empezar</h2>
+        <details class="faq">
+          <summary>¿Mis clientes tienen que instalar una aplicación?</summary>
+          <p>No. Escanean el QR con la cámara del celular y la carta se abre en el navegador. Si su celular no es compatible con Realidad Aumentada, igual pueden girar y acercar el plato en 3D.</p>
+        </details>
+        <details class="faq">
+          <summary>¿Necesito modelar mis platos en 3D?</summary>
+          <p>No. Tomas una foto, la IA sugiere la ficha y Platter asigna un modelo 3D de su biblioteca, a escala real (por ejemplo, un plato de 27 cm se ve de 27 cm en la mesa).</p>
+        </details>
+        <details class="faq">
+          <summary>¿Puedo marcar un plato como agotado?</summary>
+          <p>Sí, con un toque desde tu panel. El plato se muestra como “Agotado por hoy” hasta que lo vuelvas a activar.</p>
+        </details>
+        <details class="faq">
+          <summary>¿Qué pasa si cambio de plan?</summary>
+          <p>Puedes subir o bajar de plan cuando quieras según tus mesas y platos. No hay permanencia mínima.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <div>
+        <a class="logo logo--footer" href="#top">
+          <svg aria-hidden="true" viewBox="0 0 64 64" width="28" height="28"><circle cx="32" cy="32" r="30" fill="var(--terracotta)"/><circle cx="32" cy="32" r="19" fill="var(--cream)"/><circle cx="32" cy="32" r="11" fill="var(--green)"/></svg>
+          <span>Platter</span>
+        </a>
+        <p class="muted small">Cartas digitales con Realidad Aumentada para restaurantes MYPE. Proyecto académico — UPC, Lima, Perú.</p>
+      </div>
+      <nav aria-label="Pie de página" class="site-footer__nav">
+        <a href="/m/demo">Carta demo</a>
+        <a href="#planes">Planes</a>
+        <a href="#piloto">Solicitar piloto</a>
+      </nav>
+      <p class="muted small site-footer__copy">© <span id="year">2026</span> Platter. Las cifras de beneficios son hipótesis del piloto.</p>
+    </div>
+  </footer>
+</body>
+</html>

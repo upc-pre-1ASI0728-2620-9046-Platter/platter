@@ -1,0 +1,99 @@
+# Blueprint de Render para Platter (plan gratuito). Guía paso a paso: docs/deploy.md
+#
+#   platter-web    Landing (/) + carta WebAR del comensal (/m/{token}); /api/* se reenvía al backend
+#   platter-admin  App de gestión del dueño (Flutter web)
+#   platter-api    Backend Spring Boot (Docker). Base de datos y fotos en Supabase.
+#
+# Si Render asigna otra URL a platter-api (p. ej. platter-api-x1y2.onrender.com), actualiza
+# la regla /api/* de platter-web y API_BASE_URL de platter-admin.
+services:
+  - type: web
+    name: platter-api
+    runtime: docker
+    plan: free
+    region: virginia
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /actuator/health
+    buildFilter:
+      paths:
+        - backend/**
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_USER
+        sync: false
+      - key: DATABASE_PASSWORD
+        sync: false
+      - key: DB_POOL_SIZE
+        value: "5"
+      - key: S3_BUCKET
+        value: photos
+      - key: S3_ENDPOINT
+        sync: false
+      - key: S3_REGION
+        sync: false
+      - key: S3_ACCESS_KEY
+        sync: false
+      - key: S3_SECRET_KEY
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: PUBLIC_WEB_URL
+        value: https://platter-web.onrender.com
+      - key: CACHE_TYPE
+        value: simple
+      - key: DEMO_DATA
+        value: "true"
+
+  - type: web
+    name: platter-web
+    runtime: static
+    buildCommand: mkdir -p public/m && cp -R landing/. public/ && cp -R webar/. public/m/
+    staticPublishPath: ./public
+    buildFilter:
+      paths:
+        - landing/**
+        - webar/**
+    headers:
+      - path: /m/index.html
+        name: Cache-Control
+        value: no-cache
+      - path: /index.html
+        name: Cache-Control
+        value: no-cache
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://platter-api.onrender.com/api/*
+      - type: redirect
+        source: /m
+        destination: /m/
+      - type: rewrite
+        source: /m/*
+        destination: /m/index.html
+
+  - type: web
+    name: platter-admin
+    runtime: static
+    buildCommand: >-
+      git clone --depth 1 --branch 3.44.1 https://github.com/flutter/flutter.git "$HOME/flutter" &&
+      export PATH="$HOME/flutter/bin:$PATH" &&
+      flutter config --no-analytics --no-cli-animations &&
+      cd admin_app &&
+      flutter build web --release --dart-define=API_BASE_URL="$API_BASE_URL"
+    staticPublishPath: ./admin_app/build/web
+    buildFilter:
+      paths:
+        - admin_app/**
+    envVars:
+      - key: API_BASE_URL
+        value: https://platter-api.onrender.com/api/v1
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

@@ -1,0 +1,18 @@
+# El plan gratuito de Render duerme el backend tras 15 min sin tráfico (el primer QR tardaría ~1 min),
+# y Supabase pausa proyectos sin actividad por 1 semana. Este ping al health check (que consulta la BD)
+# mantiene ambos activos en horario de 8:00 a 23:59 de Lima. Desactívalo si no lo necesitas.
+name: Keep alive
+
+on:
+  schedule:
+    - cron: "*/10 0-4,13-23 * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping backend health
+        env:
+          HEALTH_URL: ${{ vars.BACKEND_HEALTH_URL || 'https://platter-api.onrender.com/actuator/health' }}
+        run: curl -fsS --max-time 120 --retry 2 "$HEALTH_URL"

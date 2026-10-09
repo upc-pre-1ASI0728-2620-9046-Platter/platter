@@ -1,0 +1,102 @@
+[
+  {
+    "id": "ceviche",
+    "name": "Cebiche clásico",
+    "category": "Ceviches",
+    "dimensions": {
+      "widthM": 0.24,
+      "depthM": 0.24,
+      "heightM": 0.067
+    }
+  },
+  {
+    "id": "lomo-saltado",
+    "name": "Lomo saltado",
+    "category": "Fondos",
+    "dimensions": {
+      "widthM": 0.28,
+      "depthM": 0.28,
+      "heightM": 0.065
+    }
+  },
+  {
+    "id": "aji-de-gallina",
+    "name": "Ají de gallina",
+    "category": "Criollos",
+    "dimensions": {
+      "widthM": 0.27,
+      "depthM": 0.27,
+      "heightM": 0.061
+    }
+  },
+  {
+    "id": "causa",
+    "name": "Causa limeña",
+    "category": "Entradas",
+    "dimensions": {
+      "widthM": 0.22,
+      "depthM": 0.22,
+      "heightM": 0.086
+    }
+  },
+  {
+    "id": "hamburguesa",
+    "name": "Hamburguesa con papas",
+    "category": "Hamburguesas",
+    "dimensions": {
+      "widthM": 0.3,
+      "depthM": 0.201,
+      "heightM": 0.109
+    }
+  },
+  {
+    "id": "pizza",
+    "name": "Pizza pepperoni",
+    "category": "Pizzas",
+    "dimensions": {
+      "widthM": 0.331,
+      "depthM": 0.331,
+      "heightM": 0.02
+    }
+  },
+  {
+    "id": "ensalada",
+    "name": "Ensalada fresca",
+    "category": "Ensaladas",
+    "dimensions": {
+      "widthM": 0.22,
+      "depthM": 0.22,
+      "heightM": 0.124
+    }
+  },
+  {
+    "id": "postre",
+    "name": "Tajada de torta",
+    "category": "Postres",
+    "dimensions": {
+      "widthM": 0.18,
+      "depthM": 0.18,
+      "heightM": 0.1
+    }
+  },
+  {
+    "id": "bebida",
+    "name": "Chicha morada",
+    "category": "Bebidas",
+    "dimensions": {
+      "widthM": 0.104,
+      "depthM": 0.08,
+      "heightM": 0.205
+    }
+  },
+  {
+    "id": "generico",
+    "name": "Plato genérico",
+    "category": null,
+    "dimensions": {
+      "widthM": 0.27,
+      "depthM": 0.27,
+      "heightM": 0.13
+    }
+  }
+]

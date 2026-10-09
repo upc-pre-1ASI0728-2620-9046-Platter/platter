@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es-PE">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Carta digital · Platter</title>
+  <meta name="description" content="Mira la carta del restaurante y proyecta los platos en tu mesa con Realidad Aumentada. Sin apps ni registro.">
+  <meta name="theme-color" content="#FBF4EA" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#17120F" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23C2562F'/%3E%3Ccircle cx='32' cy='32' r='19' fill='%23FBF4EA'/%3E%3Ccircle cx='32' cy='32' r='11' fill='%231F4D3A'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&display=swap">
+  <link rel="stylesheet" href="/m/styles.css">
+  <script type="module" src="/m/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al menú</a>
+
+  <header class="topbar" id="topbar">
+    <div class="topbar__inner">
+      <div class="brand">
+        <p class="brand__eyebrow" id="tableLabel" aria-live="polite"><span class="skeleton skeleton--text" style="width:4.5rem"></span></p>
+        <h1 class="brand__name" id="restaurantName"><span class="skeleton skeleton--title"></span></h1>
+      </div>
+      <button class="btn btn--ghost filter-btn" id="filterBtn" type="button" aria-haspopup="dialog" aria-controls="filterSheet" hidden>
+        <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M3 5h18l-7 8v5l-4 2v-7L3 5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <span class="filter-btn__label"><span class="filter-btn__long">Filtrar </span>alérgenos</span>
+        <span class="filter-btn__count" id="filterCount" hidden></span>
+      </button>
+    </div>
+    <nav class="chips" id="categoryNav" aria-label="Categorías de la carta" hidden></nav>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <div id="notice" role="status"></div>
+    <div id="activeFilters"></div>
+    <div id="content" aria-busy="true">
+      <div class="menu-list" aria-hidden="true">
+        <div class="card card--skeleton"><div class="skeleton card__photo"></div><div class="card__body"><span class="skeleton skeleton--title"></span><span class="skeleton skeleton--text"></span><span class="skeleton skeleton--text" style="width:60%"></span></div></div>
+        <div class="card card--skeleton"><div class="skeleton card__photo"></div><div class="card__body"><span class="skeleton skeleton--title"></span><span class="skeleton skeleton--text"></span><span class="skeleton skeleton--text" style="width:60%"></span></div></div>
+        <div class="card card--skeleton"><div class="skeleton card__photo"></div><div class="card__body"><span class="skeleton skeleton--title"></span><span class="skeleton skeleton--text"></span><span class="skeleton skeleton--text" style="width:60%"></span></div></div>
+      </div>
+      <span class="sr-only">Cargando la carta…</span>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>Carta digital con <strong>Platter</strong> · Las imágenes 3D son referenciales.</p>
+  </footer>
+
+  <!-- Detalle del plato -->
+  <dialog class="sheet" id="dishSheet" aria-labelledby="dishTitle">
+    <div class="sheet__panel" id="dishPanel"></div>
+  </dialog>
+
+  <!-- Filtro de alérgenos -->
+  <dialog class="sheet" id="filterSheet" aria-labelledby="filterTitle">
+    <form class="sheet__panel" method="dialog" id="filterForm">
+      <div class="sheet__head">
+        <h2 id="filterTitle" class="sheet__title">Filtrar alérgenos</h2>
+        <button class="icon-btn" type="button" data-close aria-label="Cerrar filtro">
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <p class="muted">Ocultaremos los platos que contienen los alérgenos que marques.</p>
+      <fieldset class="toggles" id="allergenToggles">
+        <legend class="sr-only">Alérgenos a evitar</legend>
+      </fieldset>
+      <p class="fineprint">La información de alérgenos la declara el restaurante. Si tienes una alergia severa, confírmalo con el personal.</p>
+      <div class="sheet__actions">
+        <button class="btn btn--ghost" type="button" id="clearFilters">Quitar filtros</button>
+        <button class="btn btn--primary" type="submit" id="applyFilters">Aplicar</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>
