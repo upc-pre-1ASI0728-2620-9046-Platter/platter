@@ -277,11 +277,25 @@ let catObserver;
 function observeCategories() {
   catObserver?.disconnect();
   const chips = [...el.nav.querySelectorAll('.chip')];
-  const setCurrent = (id) => chips.forEach((c) => {
-    const on = c.dataset.cat === id;
-    c.setAttribute('aria-current', on ? 'true' : 'false');
-    if (on) c.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-  });
+  // Centra el chip activo desplazando SOLO la barra de categorías. (scrollIntoView también movía la página
+  // y, en celulares, peleaba con el gesto del usuario en cada cambio de categoría: parecía que no hacía scroll).
+  const revealChip = (c) => {
+    const nav = el.nav;
+    const offset = c.getBoundingClientRect().left - nav.getBoundingClientRect().left;
+    const left = nav.scrollLeft + offset - (nav.clientWidth - c.offsetWidth) / 2;
+    const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    nav.scrollTo({ left: Math.max(0, left), behavior: smooth ? 'smooth' : 'auto' });
+  };
+  let current = null;
+  const setCurrent = (id) => {
+    if (id === current) return;
+    current = id;
+    chips.forEach((c) => {
+      const on = c.dataset.cat === id;
+      c.setAttribute('aria-current', on ? 'true' : 'false');
+      if (on) revealChip(c);
+    });
+  };
   if (chips[0]) setCurrent(chips[0].dataset.cat);
   if (!('IntersectionObserver' in window)) return;
   catObserver = new IntersectionObserver((entries) => {
