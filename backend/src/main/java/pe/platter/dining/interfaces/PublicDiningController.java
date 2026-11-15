@@ -32,7 +32,10 @@ import pe.platter.dining.application.DiningService;
 import pe.platter.dining.domain.InteractionType;
 import pe.platter.shared.api.PlatterException;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 /** API pública del comensal: sin autenticación, contextualizada por el token del QR de mesa (US13–US17). */
+@Tag(name = "Dining (public)", description = "Experiencia del comensal: mesa por token, carta pública y eventos anónimos.")
 @RestController
 @RequestMapping("/api/v1/public")
 class PublicDiningController {

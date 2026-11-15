@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import pe.platter.leads.domain.Lead;
 import pe.platter.leads.infrastructure.LeadRepository;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Leads", description = "Solicitudes de piloto desde la Landing Page (público).")
 @RestController
 class LeadController {
 

@@ -17,7 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import pe.platter.assets.application.ModelLibrary;
 import pe.platter.shared.api.PlatterException;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 /** US22: despacho de activos 3D con caché inmutable y validación condicional (ETag / If-None-Match). */
+@Tag(name = "3D Models", description = "Biblioteca de modelos 3D a escala real y descarga GLB con ETag.")
 @RestController
 @RequestMapping("/api/v1")
 class AssetController {

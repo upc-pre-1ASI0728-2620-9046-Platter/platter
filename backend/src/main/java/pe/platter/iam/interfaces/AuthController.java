@@ -21,6 +21,10 @@ import pe.platter.restaurants.interfaces.RestaurantResourceAssembler;
 import pe.platter.restaurants.interfaces.RestaurantResourceAssembler.RestaurantResource;
 import pe.platter.shared.security.CurrentOwner;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "IAM", description = "Registro, inicio de sesión y sesión del dueño (JWT HS256, 1 h).")
 @RestController
 @RequestMapping("/api/v1")
 class AuthController {
@@ -45,6 +49,7 @@ class AuthController {
         return toResponse(auth.login(request.email(), request.password()));
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/me")
     MeResponse me(CurrentOwner owner) {
         return new MeResponse(UserResource.from(auth.user(owner.userId())),

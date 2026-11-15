@@ -294,6 +294,17 @@ class PlatterApiIntegrationTest {
         mvc.perform(get("/api/v1/assets/models/no-existe.glb")).andExpect(status().isNotFound());
     }
 
+    @Test
+    void openApiDocumentationIsPublic() throws Exception {
+        mvc.perform(get("/v3/api-docs")).andExpect(status().isOk())
+                .andExpect(jsonPath("$.info.title").value("Platter API"))
+                .andExpect(jsonPath("$.components.securitySchemes.bearerAuth.scheme").value("bearer"))
+                .andExpect(jsonPath("$.paths['/api/v1/dishes/analyze'].post").exists())
+                .andExpect(jsonPath("$.paths['/api/v1/public/tables/{token}'].get").exists())
+                .andExpect(jsonPath("$.paths['/api/v1/dishes'].get.security[0].bearerAuth").exists());
+        mvc.perform(get("/swagger-ui/index.html")).andExpect(status().isOk());
+    }
+
     private static MockMultipartFile png(String part) throws Exception {
         BufferedImage image = new BufferedImage(8, 8, BufferedImage.TYPE_INT_RGB);
         ByteArrayOutputStream out = new ByteArrayOutputStream();

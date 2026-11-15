@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pe.platter.catalog.domain.Allergen;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Catalog Reference", description = "Alérgenos normados y categorías sugeridas (público).")
 @RestController
 @RequestMapping("/api/v1")
 class CatalogReferenceController {

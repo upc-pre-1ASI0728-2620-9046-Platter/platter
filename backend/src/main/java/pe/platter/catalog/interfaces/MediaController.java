@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pe.platter.catalog.application.PhotoService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 /** Las fotos son inmutables (cada carga genera un id nuevo), por lo que se sirven con caché pública larga. */
+@Tag(name = "Media", description = "Fotos de platos servidas con caché pública.")
 @RestController
 class MediaController {
 

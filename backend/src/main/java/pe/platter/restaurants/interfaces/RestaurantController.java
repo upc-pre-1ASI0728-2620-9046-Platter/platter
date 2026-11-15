@@ -16,6 +16,11 @@ import pe.platter.restaurants.application.RestaurantService;
 import pe.platter.restaurants.interfaces.RestaurantResourceAssembler.RestaurantResource;
 import pe.platter.shared.security.CurrentOwner;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+@Tag(name = "Restaurant & Plan", description = "Datos del restaurante del dueño autenticado y cambio de plan.")
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/v1/restaurant")
 class RestaurantController {

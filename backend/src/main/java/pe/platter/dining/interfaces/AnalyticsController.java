@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 import pe.platter.dining.application.AnalyticsService;
 import pe.platter.shared.security.CurrentOwner;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+@Tag(name = "Analytics", description = "Resumen de interacciones de los comensales para el dueño.")
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/v1/analytics")
 class AnalyticsController {
