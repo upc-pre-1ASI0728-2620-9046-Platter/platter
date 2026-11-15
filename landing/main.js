@@ -39,6 +39,35 @@ nav.addEventListener('click', (e) => {
 $('#year').textContent = String(new Date().getFullYear());
 
 // ---------------------------------------------------------------------------
+// Contacto: se configura con data-whatsapp / data-email / data-admin-url en <body>.
+const CONTACT = {
+  whatsapp: (document.body.dataset.whatsapp || '').replace(/\D/g, ''),
+  email: (document.body.dataset.email || '').trim(),
+  adminUrl: (document.body.dataset.adminUrl || '').trim(),
+};
+const waUrl = (text) => `https://wa.me/${CONTACT.whatsapp}${text ? `?text=${encodeURIComponent(text)}` : ''}`;
+const waLabel = (n) => (n.startsWith('51') && n.length === 11 ? `+51 ${n.slice(2, 5)} ${n.slice(5, 8)} ${n.slice(8)}` : `+${n}`);
+
+function initContact() {
+  if (CONTACT.whatsapp) {
+    document.querySelectorAll('[data-whatsapp-link]').forEach((a) => {
+      a.href = waUrl(a.dataset.waText);
+      a.target = '_blank';
+      a.rel = 'noopener';
+    });
+    document.querySelectorAll('[data-whatsapp-label]').forEach((s) => { s.textContent = waLabel(CONTACT.whatsapp); });
+  }
+  if (CONTACT.email) {
+    document.querySelectorAll('[data-email-link]').forEach((a) => { a.href = `mailto:${CONTACT.email}`; });
+    document.querySelectorAll('[data-email-label]').forEach((s) => { s.textContent = CONTACT.email; });
+  }
+  document.querySelectorAll('[data-contact]').forEach((node) => { node.hidden = !CONTACT[node.dataset.contact]; });
+  if (CONTACT.adminUrl) document.querySelectorAll('[data-admin-link]').forEach((a) => { a.href = CONTACT.adminUrl; });
+  else document.querySelectorAll('[data-admin-link]').forEach((a) => a.remove());
+}
+initContact();
+
+// ---------------------------------------------------------------------------
 // Demo AR interactiva (US01)
 const viewer = $('#demoViewer');
 const switcher = $('#modelSwitcher');
@@ -187,28 +216,32 @@ function validate(data) {
   else if (!/^(51)?9\d{8}$/.test(digits) && !(digits.length >= 7 && digits.length <= 12)) err.phone = 'Ingresa un número válido (por ejemplo, 987 654 321).';
   if (data.tables === '' || data.tables == null) err.tables = 'Indica cuántas mesas tiene tu local.';
   else if (!Number.isInteger(Number(data.tables)) || Number(data.tables) < 1 || Number(data.tables) > 500) err.tables = 'Ingresa un número entero entre 1 y 500.';
+  if (!form.elements.consent.checked) err.consent = 'Necesitamos tu autorización para poder contactarte.';
   return err;
 }
 
+const CHECKED = [...FIELDS, 'consent'];
 function showErrors(err) {
-  for (const f of FIELDS) {
+  for (const f of CHECKED) {
     const input = form.elements[f];
     const msg = err[f] || '';
     $(`#${f}-err`).textContent = msg;
     if (msg) input.setAttribute('aria-invalid', 'true');
     else input.removeAttribute('aria-invalid');
   }
-  const first = FIELDS.find((f) => err[f]);
+  const first = CHECKED.find((f) => err[f]);
   if (first) form.elements[first].focus();
 }
 
-form.addEventListener('input', (e) => {
+function clearFieldError(e) {
   const f = e.target.name;
   if (f && e.target.getAttribute('aria-invalid') === 'true') {
     e.target.removeAttribute('aria-invalid');
     $(`#${f}-err`).textContent = '';
   }
-});
+}
+form.addEventListener('input', clearFieldError);
+form.addEventListener('change', clearFieldError);
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -225,9 +258,11 @@ form.addEventListener('submit', async (e) => {
   try {
     const res = await getJson('/public/leads', { method: 'POST', body: JSON.stringify(payload) });
     const success = $('#leadSuccess');
+    const waText = `Hola, soy ${payload.contactName} de ${payload.restaurantName} (${payload.tables} mesas). Acabo de solicitar el piloto de Platter.`;
     success.innerHTML = `<div class="big" aria-hidden="true">🎉</div><h3>¡Solicitud recibida!</h3>
       <p>${esc(res?.message || 'Recibirás tu acceso en menos de 24 horas')}</p>
-      <p class="muted small">Te escribiremos a <strong>${esc(payload.email)}</strong>.</p>`;
+      <p class="muted small">Te escribiremos a <strong>${esc(payload.email)}</strong>.</p>
+      ${CONTACT.whatsapp ? `<a class="btn btn--whatsapp" href="${esc(waUrl(waText))}" target="_blank" rel="noopener">¿Quieres empezar ya? Escríbenos por WhatsApp</a>` : ''}`;
     [...form.children].forEach((c) => { if (c !== success) c.hidden = true; });
     success.hidden = false;
     success.focus();

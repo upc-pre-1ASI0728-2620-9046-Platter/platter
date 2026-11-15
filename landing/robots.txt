@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /m/
+Disallow: /api/
+
+Sitemap: https://platter-web.onrender.com/sitemap.xml
