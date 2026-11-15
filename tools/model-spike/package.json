@@ -1,0 +1,23 @@
+{
+  "name": "platter-model-spike",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Prueba comparativa: fotos reales de platos → modelos 3D con IA (Tripo, Meshy) a escala real, para decidir proveedor.",
+  "scripts": {
+    "generate": "node --env-file-if-exists=.env src/run.js",
+    "apple": "node src/apple.js",
+    "mock": "node src/run.js --mock",
+    "report": "node src/run.js --report-only",
+    "serve": "node src/serve.js"
+  },
+  "dependencies": {
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/extensions": "^4.5.1",
+    "@gltf-transform/functions": "^4.5.1",
+    "draco3dgltf": "^1.5.7",
+    "meshoptimizer": "^1.3.0",
+    "obj2gltf": "^3.2.0",
+    "sharp": "^0.35.5"
+  }
+}

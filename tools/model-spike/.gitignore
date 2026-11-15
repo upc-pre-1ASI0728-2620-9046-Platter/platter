@@ -1,0 +1,7 @@
+node_modules/
+out/
+.env
+photos/*
+!photos/.gitkeep
+imports/
+apple/capture
