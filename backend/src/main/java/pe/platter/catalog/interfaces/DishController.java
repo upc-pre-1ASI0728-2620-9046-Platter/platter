@@ -47,6 +47,11 @@ import pe.platter.catalog.interfaces.DishResources.DishResource;
 import pe.platter.shared.api.PlatterException;
 import pe.platter.shared.security.CurrentOwner;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+@Tag(name = "Dish Catalog", description = "Fotos, análisis con IA, ficha, publicación y disponibilidad de platos.")
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/v1/dishes")
 class DishController {

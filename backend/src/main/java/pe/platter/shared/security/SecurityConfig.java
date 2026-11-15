@@ -39,7 +39,9 @@ public class SecurityConfig {
 
     private static final String[] PUBLIC_GET = {
             "/api/v1/plans", "/api/v1/allergens", "/api/v1/categories", "/api/v1/models",
-            "/api/v1/assets/**", "/api/v1/media/**", "/api/v1/public/**", "/actuator/health/**"
+            "/api/v1/assets/**", "/api/v1/media/**", "/api/v1/public/**", "/actuator/health/**",
+            // Documentación OpenAPI (Swagger UI)
+            "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
     };
 
     @Bean

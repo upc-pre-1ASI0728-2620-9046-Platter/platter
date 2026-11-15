@@ -37,6 +37,11 @@ import pe.platter.restaurants.infrastructure.QrRenderer;
 import pe.platter.shared.api.PlatterException;
 import pe.platter.shared.security.CurrentOwner;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+@Tag(name = "Tables & QR", description = "Mesas, token de mesa, código QR PNG y plantilla PDF imprimible.")
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/v1/tables")
 class TableController {

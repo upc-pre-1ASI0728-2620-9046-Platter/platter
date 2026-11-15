@@ -6,6 +6,9 @@ Autenticación del dueño: `Authorization: Bearer <JWT HS256, 1h>`. Las rutas `/
 Las descargas binarias autenticadas (`qr.png`, `qr-sheet.pdf`) también aceptan `?access_token=<jwt>`
 para poder abrirse en un navegador externo.
 
+Documentación OpenAPI 3 generada desde el código (springdoc): Swagger UI en `/swagger-ui/index.html` y JSON en `/v3/api-docs`
+(desplegado: <https://platter-api.onrender.com/swagger-ui/index.html>).
+
 ## Errores
 
 Todo error responde `{ "code": "STRING", "message": "texto en español", "details": {…opcional} }`.

@@ -46,6 +46,7 @@ docker compose up --build
 - Landing: <http://localhost:8081/>
 - Carta demo (comensal): <http://localhost:8081/m/demo>
 - API: <http://localhost:8081/api/v1> (o directo en `:8080`)
+- Swagger UI: <http://localhost:8080/swagger-ui/index.html> (OpenAPI en `/v3/api-docs`)
 - Cuenta demo para la app: `demo@platter.pe` / `demo12345`
 - Si el puerto 8080 está ocupado: `BACKEND_PORT=8090 docker compose up --build`
 
