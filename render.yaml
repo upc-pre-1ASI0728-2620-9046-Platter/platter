@@ -80,8 +80,11 @@ services:
   - type: web
     name: platter-admin
     runtime: static
+    # Render guarda $HOME/flutter en la caché de build: se reutiliza si ya es la versión correcta y solo se
+    # clona cuando falta (clonar sobre la carpeta existente hace fallar el build).
     buildCommand: >-
-      git clone --depth 1 --branch 3.44.1 https://github.com/flutter/flutter.git "$HOME/flutter" &&
+      (grep -qs '"frameworkVersion": "3.44.1"' "$HOME/flutter/bin/cache/flutter.version.json" ||
+      (rm -rf "$HOME/flutter" && git clone --depth 1 --branch 3.44.1 https://github.com/flutter/flutter.git "$HOME/flutter")) &&
       export PATH="$HOME/flutter/bin:$PATH" &&
       flutter config --no-analytics --no-cli-animations &&
       cd admin_app &&
