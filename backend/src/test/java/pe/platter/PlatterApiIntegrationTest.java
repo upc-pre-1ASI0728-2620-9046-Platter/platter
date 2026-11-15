@@ -301,7 +301,9 @@ class PlatterApiIntegrationTest {
                 .andExpect(jsonPath("$.components.securitySchemes.bearerAuth.scheme").value("bearer"))
                 .andExpect(jsonPath("$.paths['/api/v1/dishes/analyze'].post").exists())
                 .andExpect(jsonPath("$.paths['/api/v1/public/tables/{token}'].get").exists())
-                .andExpect(jsonPath("$.paths['/api/v1/dishes'].get.security[0].bearerAuth").exists());
+                .andExpect(jsonPath("$.paths['/api/v1/dishes'].get.security[0].bearerAuth").exists())
+                .andExpect(jsonPath("$.paths['/api/v1/dishes'].get.parameters").doesNotExist())
+                .andExpect(jsonPath("$.paths['/api/v1/analytics/summary'].get.parameters[?(@.name == 'owner')]").isEmpty());
         mvc.perform(get("/swagger-ui/index.html")).andExpect(status().isOk());
     }
 

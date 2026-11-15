@@ -1,5 +1,6 @@
 package pe.platter.shared.config;
 
+import org.springdoc.core.utils.SpringDocUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import pe.platter.shared.security.CurrentOwner;
 
 /**
  * Documentación OpenAPI 3 del contrato REST v1 (Published Language).
@@ -16,6 +18,11 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
  */
 @Configuration
 class OpenApiConfig {
+
+    static {
+        // El dueño se resuelve desde el JWT (CurrentOwnerArgumentResolver): no es un parámetro de la API.
+        SpringDocUtils.getConfig().addRequestWrapperToIgnore(CurrentOwner.class);
+    }
 
     @Bean
     OpenAPI platterOpenApi() {
