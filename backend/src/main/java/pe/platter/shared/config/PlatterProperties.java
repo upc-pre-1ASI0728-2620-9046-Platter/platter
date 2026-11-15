@@ -43,6 +43,10 @@ public record PlatterProperties(
         }
     }
 
-    public record Demo(@DefaultValue("true") boolean enabled) {
+    /**
+     * {@code enabled}: crea el restaurante demo. {@code history}: genera ~5 semanas de métricas de ejemplo
+     * (se renuevan al arrancar si quedaron desactualizadas); se desactiva en las pruebas.
+     */
+    public record Demo(@DefaultValue("true") boolean enabled, @DefaultValue("true") boolean history) {
     }
 }

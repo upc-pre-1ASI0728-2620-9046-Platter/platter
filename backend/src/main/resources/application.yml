@@ -63,3 +63,4 @@ platter:
     low-confidence-threshold: 0.5
   demo:
     enabled: ${DEMO_DATA:true}
+    history: ${DEMO_HISTORY:true}

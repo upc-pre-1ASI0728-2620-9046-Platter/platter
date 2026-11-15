@@ -76,7 +76,7 @@ class PlatterApiIntegrationTest {
         mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"email\":\"DEMO@platter.pe\",\"password\":\"demo12345\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.restaurant.name").value("Sabores de Barranco (Demo)"));
+                .andExpect(jsonPath("$.restaurant.name").value("Sabores de Barranco"));
         mvc.perform(auth(get("/api/v1/me"))).andExpect(status().isOk())
                 .andExpect(jsonPath("$.user.name").value("Rosa"));
         mvc.perform(post("/api/v1/auth/register").contentType(MediaType.APPLICATION_JSON)

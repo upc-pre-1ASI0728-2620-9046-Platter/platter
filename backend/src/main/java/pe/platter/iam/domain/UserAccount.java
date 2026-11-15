@@ -42,6 +42,10 @@ public class UserAccount {
         this.createdAt = Instant.now();
     }
 
+    public void rename(String name) {
+        this.name = name;
+    }
+
     public UUID getId() {
         return id;
     }
