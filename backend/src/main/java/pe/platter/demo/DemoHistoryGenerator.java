@@ -33,6 +33,7 @@ class DemoHistoryGenerator {
     private static final ZoneId LIMA = ZoneId.of("America/Lima");
     private static final int DAYS = 35;
     private static final Duration STALE_AFTER = Duration.ofHours(6);
+    private static final int MIN_WEEKLY_EVENTS = 200;
     private static final String INSERT = "insert into interaction_events "
             + "(restaurant_id, table_id, dish_id, type, duration_seconds, occurred_at) values (?, ?, ?, ?, ?, ?)";
 
@@ -46,7 +47,12 @@ class DemoHistoryGenerator {
         Timestamp last = jdbc.queryForObject(
                 "select max(occurred_at) from interaction_events where restaurant_id = ?", Timestamp.class,
                 restaurantId);
-        if (last != null && last.toInstant().isAfter(Instant.now().minus(STALE_AFTER))) {
+        Integer lastWeek = jdbc.queryForObject(
+                "select count(*) from interaction_events where restaurant_id = ? and occurred_at >= ?", Integer.class,
+                restaurantId, Timestamp.from(Instant.now().minus(Duration.ofDays(7))));
+        // Unos pocos escaneos reales recientes no cuentan como historial: se regenera si la semana está casi vacía.
+        boolean recent = last != null && last.toInstant().isAfter(Instant.now().minus(STALE_AFTER));
+        if (recent && lastWeek != null && lastWeek >= MIN_WEEKLY_EVENTS) {
             return;
         }
         Map<String, UUID> dishIds = new HashMap<>();
