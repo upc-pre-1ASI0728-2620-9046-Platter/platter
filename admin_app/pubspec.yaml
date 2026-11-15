@@ -41,6 +41,7 @@ dependencies:
   http_parser: ^4.1.2
   flutter_localizations:
     sdk: flutter
+  google_fonts: ^8.2.1
 
 dev_dependencies:
   flutter_test:

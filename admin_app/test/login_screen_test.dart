@@ -7,6 +7,8 @@ import 'package:platter_admin/state/session.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  // Sin red en las pruebas: fuentes del sistema en lugar de Google Fonts.
+  setUpAll(() => platterBrandFonts = false);
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
   Future<Session> pumpApp(WidgetTester tester) async {

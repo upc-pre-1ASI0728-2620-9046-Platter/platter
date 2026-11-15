@@ -17,6 +17,8 @@ http.Response _json(Object body, [int status = 200]) => http.Response.bytes(
     );
 
 void main() {
+  // Sin red en las pruebas: fuentes del sistema en lugar de Google Fonts.
+  setUpAll(() => platterBrandFonts = false);
   final requests = <String>[];
 
   setUp(() {

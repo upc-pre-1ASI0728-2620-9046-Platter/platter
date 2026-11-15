@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../api/api_exception.dart';
 import '../../api/error_messages.dart';
 import '../../state/session.dart';
+import 'auth_layout.dart';
 import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -62,88 +63,91 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Registra tu restaurante')),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 480),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    TextFormField(
-                      controller: _ownerName,
-                      textCapitalization: TextCapitalization.words,
-                      decoration: InputDecoration(
-                        labelText: 'Tu nombre',
-                        prefixIcon: const Icon(Icons.person_outline),
-                        errorText: _fieldErrors['ownerName'],
-                      ),
-                      validator: (v) => _required(v, 'Ingresa tu nombre'),
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _email,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        labelText: 'Correo electrónico',
-                        prefixIcon: const Icon(Icons.email_outlined),
-                        errorText: _fieldErrors['email'],
-                      ),
-                      validator: validateEmail,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _password,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: 'Contraseña',
-                        helperText: 'Mínimo 8 caracteres',
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        errorText: _fieldErrors['password'],
-                      ),
-                      validator: (v) => (v == null || v.length < 8) ? 'Mínimo 8 caracteres' : null,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _restaurantName,
-                      textCapitalization: TextCapitalization.words,
-                      decoration: InputDecoration(
-                        labelText: 'Nombre del restaurante',
-                        prefixIcon: const Icon(Icons.storefront_outlined),
-                        errorText: _fieldErrors['restaurantName'],
-                      ),
-                      validator: (v) => _required(v, 'Ingresa el nombre del restaurante'),
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _address,
-                      decoration: InputDecoration(
-                        labelText: 'Dirección (opcional)',
-                        prefixIcon: const Icon(Icons.place_outlined),
-                        errorText: _fieldErrors['address'],
-                      ),
-                    ),
-                    if (_error != null) ...[
-                      const SizedBox(height: 16),
-                      Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
-                    ],
-                    const SizedBox(height: 24),
-                    FilledButton(
-                      onPressed: _loading ? null : _submit,
-                      child: _loading
-                          ? const SizedBox.square(dimension: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                          : const Text('Crear cuenta'),
-                    ),
-                  ],
-                ),
+    return AuthLayout(
+      title: 'Registra tu restaurante',
+      subtitle: 'Crea tu cuenta y publica tu carta en minutos.',
+      leading: Padding(
+        padding: const EdgeInsets.only(bottom: 16),
+        child: TextButton.icon(
+          onPressed: () => Navigator.of(context).maybePop(),
+          icon: const Icon(Icons.arrow_back_rounded),
+          label: const Text('Volver'),
+        ),
+      ),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextFormField(
+              controller: _ownerName,
+              textCapitalization: TextCapitalization.words,
+              decoration: InputDecoration(
+                labelText: 'Tu nombre',
+                prefixIcon: const Icon(Icons.person_outline),
+                errorText: _fieldErrors['ownerName'],
+              ),
+              validator: (v) => _required(v, 'Ingresa tu nombre'),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _email,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                labelText: 'Correo electrónico',
+                prefixIcon: const Icon(Icons.email_outlined),
+                errorText: _fieldErrors['email'],
+              ),
+              validator: validateEmail,
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _password,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Contraseña',
+                helperText: 'Mínimo 8 caracteres',
+                prefixIcon: const Icon(Icons.lock_outline),
+                errorText: _fieldErrors['password'],
+              ),
+              validator: (v) => (v == null || v.length < 8) ? 'Mínimo 8 caracteres' : null,
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _restaurantName,
+              textCapitalization: TextCapitalization.words,
+              decoration: InputDecoration(
+                labelText: 'Nombre del restaurante',
+                prefixIcon: const Icon(Icons.storefront_outlined),
+                errorText: _fieldErrors['restaurantName'],
+              ),
+              validator: (v) => _required(v, 'Ingresa el nombre del restaurante'),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _address,
+              decoration: InputDecoration(
+                labelText: 'Dirección (opcional)',
+                prefixIcon: const Icon(Icons.place_outlined),
+                errorText: _fieldErrors['address'],
               ),
             ),
-          ),
+            if (_error != null) ...[
+              const SizedBox(height: 16),
+              Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+            ],
+            const SizedBox(height: 24),
+            FilledButton(
+              style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
+              onPressed: _loading ? null : _submit,
+              child: _loading
+                  ? const SizedBox.square(
+                      dimension: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                    )
+                  : const Text('Crear cuenta'),
+            ),
+          ],
         ),
       ),
     );

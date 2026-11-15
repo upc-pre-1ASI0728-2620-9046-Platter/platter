@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import '../../api/error_messages.dart';
 import '../../models/dish.dart';
 import '../../state/session.dart';
+import '../../theme/platter_theme.dart';
 import '../../utils/format.dart';
+import '../../widgets/brand.dart';
 import '../../widgets/dish_widgets.dart';
 import '../../widgets/state_views.dart';
 import 'dish_form_screen.dart';
 import 'new_dish_screen.dart';
 
-/// Carta: lista de platos agrupada por categoría (US18: disponibilidad en un toque).
+/// Carta: platos en tarjetas con foto, filtro por categoría y búsqueda (US18: agotado en un toque).
 class DishesScreen extends StatefulWidget {
   const DishesScreen({super.key});
 
@@ -21,6 +23,7 @@ class _DishesScreenState extends State<DishesScreen> {
   List<Dish>? _dishes;
   String? _error;
   String? _category; // null = todas
+  String _query = '';
   final _pending = <String>{};
 
   @override
@@ -72,8 +75,7 @@ class _DishesScreenState extends State<DishesScreen> {
   }
 
   Future<void> _openNew() async {
-    final created = await Navigator.of(context)
-        .push<bool>(MaterialPageRoute(builder: (_) => const NewDishScreen()));
+    final created = await Navigator.of(context).push<bool>(MaterialPageRoute(builder: (_) => const NewDishScreen()));
     if (created == true && mounted) {
       _load();
       SessionScope.read(context).refreshRestaurant();
@@ -81,28 +83,29 @@ class _DishesScreenState extends State<DishesScreen> {
   }
 
   Future<void> _openEdit(Dish dish) async {
-    final changed = await Navigator.of(context)
-        .push<bool>(MaterialPageRoute(builder: (_) => DishFormScreen.edit(dish: dish)));
+    final changed = await Navigator.of(
+      context,
+    ).push<bool>(MaterialPageRoute(builder: (_) => DishFormScreen.edit(dish: dish)));
     if (changed == true && mounted) {
       _load();
       SessionScope.read(context).refreshRestaurant();
     }
   }
 
+  String _catOf(Dish d) => d.category.isEmpty ? 'Sin categoría' : d.category;
+
   @override
   Widget build(BuildContext context) {
-    final restaurant = SessionScope.of(context).restaurant;
+    final dishes = _dishes;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(restaurant?.name.isNotEmpty == true ? 'Carta · ${restaurant!.name}' : 'Carta'),
-        actions: [IconButton(tooltip: 'Actualizar', onPressed: _load, icon: const Icon(Icons.refresh))],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _openNew,
-        icon: const Icon(Icons.add_a_photo_outlined),
-        label: const Text('Nuevo plato'),
-      ),
-      body: _buildBody(),
+      floatingActionButton: dishes == null || dishes.isEmpty
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: _openNew,
+              icon: const Icon(Icons.add_a_photo_outlined),
+              label: const Text('Nuevo plato'),
+            ),
+      body: SafeArea(bottom: false, child: _buildBody()),
     );
   }
 
@@ -110,85 +113,147 @@ class _DishesScreenState extends State<DishesScreen> {
     if (_error != null && _dishes == null) return ErrorView(message: _error!, onRetry: _load);
     final dishes = _dishes;
     if (dishes == null) return const LoadingView();
+    final published = dishes.where((d) => d.status == DishStatus.published).length;
+    final header = PageHeader(
+      title: 'Carta',
+      subtitle: dishes.isEmpty
+          ? 'Aún no tienes platos'
+          : '${dishes.length} platos · $published publicados · ${dishes.where((d) => !d.available).length} agotados hoy',
+      actions: [IconButton(tooltip: 'Actualizar', onPressed: _load, icon: const Icon(Icons.refresh_rounded))],
+    );
     if (dishes.isEmpty) {
-      return EmptyView(
-        icon: Icons.restaurant_menu,
-        title: 'Tu carta está vacía',
-        message: 'Toma una foto de tu primer plato y la IA te ayudará a completar la ficha.',
-        action: FilledButton.icon(
-          onPressed: _openNew,
-          icon: const Icon(Icons.add_a_photo_outlined),
-          label: const Text('Nuevo plato'),
-        ),
+      return Column(
+        children: [
+          header,
+          Expanded(
+            child: EmptyView(
+              icon: Icons.restaurant_menu_rounded,
+              title: 'Tu carta está vacía',
+              message: 'Toma una foto de tu primer plato y la IA te ayudará a completar la ficha.',
+              action: FilledButton.icon(
+                onPressed: _openNew,
+                icon: const Icon(Icons.add_a_photo_outlined),
+                label: const Text('Nuevo plato'),
+              ),
+            ),
+          ),
+        ],
       );
     }
 
     final categories = <String>[];
     for (final d in dishes) {
-      final c = d.category.isEmpty ? 'Sin categoría' : d.category;
-      if (!categories.contains(c)) categories.add(c);
+      if (!categories.contains(_catOf(d))) categories.add(_catOf(d));
     }
-    String catOf(Dish d) => d.category.isEmpty ? 'Sin categoría' : d.category;
-    final visibleCats = _category == null ? categories : [_category!];
+    final q = _query.trim().toLowerCase();
+    final visible = dishes
+        .where((d) => _category == null || _catOf(d) == _category)
+        .where((d) => q.isEmpty || d.name.toLowerCase().contains(q) || d.category.toLowerCase().contains(q))
+        .toList();
 
-    final children = <Widget>[
-      SizedBox(
-        height: 56,
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: ChoiceChip(
-                label: Text('Todas (${dishes.length})'),
-                selected: _category == null,
-                onSelected: (_) => setState(() => _category = null),
-              ),
-            ),
-            for (final c in categories)
-              Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: ChoiceChip(
-                  label: Text(c),
-                  selected: _category == c,
-                  onSelected: (_) => setState(() => _category = c),
+    return RefreshIndicator(
+      onRefresh: _load,
+      child: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(child: header),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
+              child: TextField(
+                onChanged: (v) => setState(() => _query = v),
+                decoration: const InputDecoration(
+                  hintText: 'Buscar plato o categoría',
+                  prefixIcon: Icon(Icons.search_rounded),
+                  isDense: true,
                 ),
               ),
-          ],
-        ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 60,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                children: [
+                  _CategoryChip(
+                    label: 'Todas',
+                    count: dishes.length,
+                    selected: _category == null,
+                    onTap: () => setState(() => _category = null),
+                  ),
+                  for (final c in categories)
+                    _CategoryChip(
+                      label: c,
+                      count: dishes.where((d) => _catOf(d) == c).length,
+                      selected: _category == c,
+                      onTap: () => setState(() => _category = c),
+                    ),
+                ],
+              ),
+            ),
+          ),
+          if (visible.isEmpty)
+            const SliverFillRemaining(
+              hasScrollBody: false,
+              child: EmptyView(icon: Icons.search_off_rounded, title: 'No hay platos que coincidan'),
+            )
+          else
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 6, 20, 110),
+              sliver: SliverLayoutBuilder(
+                builder: (context, constraints) => SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    // Tarjetas de al menos ~260 px: una columna en celulares, varias en tablet y web.
+                    crossAxisCount: (constraints.crossAxisExtent / 260).floor().clamp(1, 6),
+                    mainAxisExtent: 318,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (context, i) => _DishCard(
+                      dish: visible[i],
+                      busy: _pending.contains(visible[i].id),
+                      onTap: () => _openEdit(visible[i]),
+                      onAvailabilityChanged: (v) => _toggleAvailability(visible[i], v),
+                    ),
+                    childCount: visible.length,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
-    ];
-    for (final c in visibleCats) {
-      children.add(Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-        child: Text(c, style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.w700,
-            )),
-      ));
-      for (final d in dishes.where((d) => catOf(d) == c)) {
-        children.add(_DishTile(
-          dish: d,
-          busy: _pending.contains(d.id),
-          onTap: () => _openEdit(d),
-          onAvailabilityChanged: (v) => _toggleAvailability(d, v),
-        ));
-      }
-    }
-    children.add(const SizedBox(height: 96));
-
-    return RefreshIndicator(onRefresh: _load, child: ListView(children: children));
+    );
   }
 }
 
-class _DishTile extends StatelessWidget {
-  const _DishTile({
-    required this.dish,
-    required this.busy,
-    required this.onTap,
-    required this.onAvailabilityChanged,
-  });
+class _CategoryChip extends StatelessWidget {
+  const _CategoryChip({required this.label, required this.count, required this.selected, required this.onTap});
+
+  final String label;
+  final int count;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: ChoiceChip(
+        showCheckmark: false,
+        label: Text('$label  $count'),
+        selected: selected,
+        onSelected: (_) => onTap(),
+        labelStyle: TextStyle(fontWeight: FontWeight.w600, color: selected ? scheme.onSecondary : scheme.onSurface),
+      ),
+    );
+  }
+}
+
+class _DishCard extends StatelessWidget {
+  const _DishCard({required this.dish, required this.busy, required this.onTap, required this.onAvailabilityChanged});
 
   final Dish dish;
   final bool busy;
@@ -198,33 +263,110 @@ class _DishTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return ListTile(
-      onTap: onTap,
-      leading: Opacity(opacity: dish.available ? 1 : 0.5, child: DishPhoto(url: dish.photoUrl)),
-      title: Text(dish.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-      subtitle: Padding(
-        padding: const EdgeInsets.only(top: 4),
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 4,
-          crossAxisAlignment: WrapCrossAlignment.center,
+    final scheme = theme.colorScheme;
+    final published = dish.status == DishStatus.published;
+    return Card(
+      child: InkWell(
+        onTap: onTap,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(formatSoles(dish.priceSoles), style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
-            StatusChip(status: dish.status),
-            if (!dish.available)
-              Text('Agotado por hoy', style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.error)),
+            SizedBox(
+              height: 168,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  ColorFiltered(
+                    colorFilter: dish.available
+                        ? const ColorFilter.mode(Colors.transparent, BlendMode.dst)
+                        : const ColorFilter.matrix(<double>[
+                            0.33, 0.33, 0.33, 0, 0, //
+                            0.33, 0.33, 0.33, 0, 0, //
+                            0.33, 0.33, 0.33, 0, 0, //
+                            0, 0, 0, 1, 0,
+                          ]),
+                    child: DishCover(url: dish.photoUrl),
+                  ),
+                  Positioned(
+                    left: 12,
+                    top: 12,
+                    child: Pill(
+                      label: published ? 'Publicado' : 'Borrador',
+                      icon: published ? Icons.check_circle_rounded : Icons.edit_note_rounded,
+                      background: published ? PlatterColors.huacatay : const Color(0xFFFCE8BF),
+                      foreground: published ? Colors.white : const Color(0xFF5A3D00),
+                    ),
+                  ),
+                  if (dish.model != null)
+                    Positioned(
+                      right: 12,
+                      top: 12,
+                      child: Tooltip(
+                        message: 'Con modelo 3D',
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.45),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(Icons.view_in_ar_rounded, color: Colors.white, size: 18),
+                        ),
+                      ),
+                    ),
+                  if (!dish.available)
+                    Positioned(
+                      left: 12,
+                      bottom: 12,
+                      child: Pill(label: 'Agotado por hoy', background: scheme.error, foreground: scheme.onError),
+                    ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 14, 10, 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      dish.category.isEmpty ? 'Sin categoría' : dish.category.toUpperCase(),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: PlatterColors.terracotta,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      dish.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleLarge?.copyWith(fontSize: 19, height: 1.15),
+                    ),
+                    const Spacer(),
+                    Row(
+                      children: [
+                        Text(
+                          formatSoles(dish.priceSoles),
+                          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        const Spacer(),
+                        Text(
+                          dish.available ? 'Disponible' : 'Agotado',
+                          style: theme.textTheme.labelMedium?.copyWith(color: scheme.onSurfaceVariant),
+                        ),
+                        Transform.scale(
+                          scale: 0.85,
+                          child: Switch(value: dish.available, onChanged: busy ? null : onAvailabilityChanged),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
-      ),
-      trailing: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Switch(
-            value: dish.available,
-            onChanged: busy ? null : onAvailabilityChanged,
-          ),
-          Text(dish.available ? 'Disponible' : 'Agotado', style: theme.textTheme.labelSmall),
-        ],
       ),
     );
   }

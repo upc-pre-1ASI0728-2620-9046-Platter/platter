@@ -4,24 +4,15 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/home_screen.dart';
 import 'state/session.dart';
+import 'theme/platter_theme.dart';
+import 'widgets/brand.dart';
+
+export 'theme/platter_theme.dart' show buildTheme, platterBrandFonts;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   final session = Session()..load();
   runApp(PlatterAdminApp(session: session));
-}
-
-/// Terracota: color cálido, amigable con la comida.
-const Color platterSeed = Color(0xFFC0532F);
-
-ThemeData buildTheme(Brightness brightness) {
-  final scheme = ColorScheme.fromSeed(seedColor: platterSeed, brightness: brightness);
-  return ThemeData(
-    useMaterial3: true,
-    colorScheme: scheme,
-    inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder()),
-    cardTheme: const CardThemeData(clipBehavior: Clip.antiAlias),
-  );
 }
 
 class PlatterAdminApp extends StatefulWidget {
@@ -91,7 +82,7 @@ class _AuthGate extends StatelessWidget {
   Widget build(BuildContext context) {
     final session = SessionScope.of(context);
     if (!session.isLoaded) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(body: Center(child: PlatterMark(size: 56)));
     }
     return session.isAuthenticated ? const HomeScreen() : const LoginScreen();
   }

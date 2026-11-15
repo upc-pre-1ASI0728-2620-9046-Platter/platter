@@ -5,7 +5,9 @@ import '../../api/api_exception.dart';
 import '../../api/error_messages.dart';
 import '../../models/dining_table.dart';
 import '../../state/session.dart';
+import '../../theme/platter_theme.dart';
 import '../../utils/launch.dart';
+import '../../widgets/brand.dart';
 import '../../widgets/state_views.dart';
 
 /// Mesas y códigos QR (US11/US12).
@@ -78,16 +80,16 @@ class _TablesScreenState extends State<TablesScreen> {
     final req = await showDialog<_BatchRequest>(context: context, builder: (_) => const _BatchDialog());
     if (req == null || !mounted) return;
     try {
-      final created = await SessionScope.read(context)
-          .api
-          .createTablesBatch(from: req.from, to: req.to, prefix: req.prefix);
+      final created = await SessionScope.read(
+        context,
+      ).api.createTablesBatch(from: req.from, to: req.to, prefix: req.prefix);
       if (!mounted) return;
       final requested = req.to - req.from + 1;
       final msg = created.isEmpty
           ? 'No se crearon mesas: todas las etiquetas ya existían.'
           : created.length < requested
-              ? 'Se crearon ${created.length} mesas (se omitieron ${requested - created.length} existentes).'
-              : 'Se crearon ${created.length} mesas.';
+          ? 'Se crearon ${created.length} mesas (se omitieron ${requested - created.length} existentes).'
+          : 'Se crearon ${created.length} mesas.';
       await _afterCreate(msg);
     } catch (e) {
       if (mounted) showSnack(context, _tableError(e), error: true);
@@ -132,7 +134,10 @@ class _TablesScreenState extends State<TablesScreen> {
   void _showQr(DiningTable t) {
     showDialog<void>(
       context: context,
-      builder: (_) => _QrDialog(table: t, onDownloadPdf: () => _downloadPdf(ids: [t.id])),
+      builder: (_) => _QrDialog(
+        table: t,
+        onDownloadPdf: () => _downloadPdf(ids: [t.id]),
+      ),
     );
   }
 
@@ -185,33 +190,25 @@ class _TablesScreenState extends State<TablesScreen> {
                   icon: const Icon(Icons.select_all),
                   onPressed: () => setState(() => _selected.addAll(_tables?.map((t) => t.id) ?? const [])),
                 ),
-                IconButton(
-                  tooltip: 'Descargar plantilla PDF',
-                  icon: const Icon(Icons.picture_as_pdf_outlined),
-                  onPressed: () => _downloadPdf(ids: _selected.toList()),
+                Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: FilledButton.icon(
+                    onPressed: () => _downloadPdf(ids: _selected.toList()),
+                    icon: const Icon(Icons.picture_as_pdf_outlined),
+                    label: const Text('PDF'),
+                  ),
                 ),
               ],
             )
-          : AppBar(
-              title: const Text('Mesas'),
-              actions: [
-                if (_tables?.isNotEmpty == true)
-                  IconButton(
-                    tooltip: 'Descargar plantilla PDF (todas)',
-                    icon: const Icon(Icons.picture_as_pdf_outlined),
-                    onPressed: _downloadPdf,
-                  ),
-                IconButton(tooltip: 'Actualizar', onPressed: _load, icon: const Icon(Icons.refresh)),
-              ],
-            ),
-      floatingActionButton: _tables?.isNotEmpty == true
+          : null,
+      floatingActionButton: _tables?.isNotEmpty == true && !_selecting
           ? FloatingActionButton.extended(
               onPressed: _showAddMenu,
               icon: const Icon(Icons.add),
-              label: const Text('Agregar'),
+              label: const Text('Agregar mesas'),
             )
           : null,
-      body: _buildBody(),
+      body: SafeArea(bottom: false, child: _buildBody()),
     );
   }
 
@@ -223,7 +220,8 @@ class _TablesScreenState extends State<TablesScreen> {
       return EmptyView(
         icon: Icons.qr_code_2,
         title: 'Aún no tienes mesas',
-        message: 'Crea tus mesas para generar un código QR por cada una. '
+        message:
+            'Crea tus mesas para generar un código QR por cada una. '
             'Tus comensales lo escanean para ver la carta en realidad aumentada.',
         action: Column(
           children: [
@@ -241,48 +239,209 @@ class _TablesScreenState extends State<TablesScreen> {
     final session = SessionScope.of(context);
     final restaurant = session.restaurant;
     final max = restaurant?.plan?.maxTables;
+    final active = tables.where((t) => t.active).length;
+    final theme = Theme.of(context);
     return RefreshIndicator(
       onRefresh: _load,
-      child: ListView.builder(
-        padding: const EdgeInsets.only(bottom: 96),
-        itemCount: tables.length + 1,
-        itemBuilder: (context, i) {
-          if (i == 0) {
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-              child: Text(
-                '${tables.length} mesa${tables.length == 1 ? '' : 's'}'
-                '${max != null ? ' de $max permitidas' : ''}'
-                '${restaurant?.plan != null ? ' · Plan ${restaurant!.plan!.name}' : ''}'
-                ' · Mantén presionada una mesa para seleccionar varias',
-                style: Theme.of(context).textTheme.bodySmall,
+      child: CustomScrollView(
+        slivers: [
+          if (!_selecting)
+            SliverToBoxAdapter(
+              child: PageHeader(
+                title: 'Mesas y QR',
+                subtitle:
+                    'Cada mesa tiene su propio código. Toca una para verlo; mantén presionado para elegir varias.',
+                actions: [IconButton(tooltip: 'Actualizar', onPressed: _load, icon: const Icon(Icons.refresh_rounded))],
               ),
-            );
-          }
-          final t = tables[i - 1];
-          final selected = _selected.contains(t.id);
-          return ListTile(
-            selected: selected,
-            onTap: _selecting ? () => _toggleSelection(t) : () => _showQr(t),
-            onLongPress: () => _toggleSelection(t),
-            leading: _selecting
-                ? Checkbox(value: selected, onChanged: (_) => _toggleSelection(t))
-                : Opacity(
-                    opacity: t.active ? 1 : 0.4,
-                    child: _QrImage(url: session.api.tableQrUrl(t.id, size: 256), size: 48),
+            ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: PlatterColors.sidebarGradient,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Wrap(
+                  spacing: 24,
+                  runSpacing: 16,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  alignment: WrapAlignment.spaceBetween,
+                  children: [
+                    _Stat(value: '${tables.length}', label: max != null ? 'mesas de $max' : 'mesas'),
+                    _Stat(value: '$active', label: 'activas'),
+                    if (restaurant?.plan != null) _Stat(value: restaurant!.plan!.name, label: 'tu plan'),
+                    FilledButton.icon(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: PlatterColors.aji,
+                        foregroundColor: PlatterColors.ink,
+                      ),
+                      onPressed: _downloadPdf,
+                      icon: const Icon(Icons.print_rounded),
+                      label: const Text('Imprimir todos los QR'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 110),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 220,
+                mainAxisExtent: 250,
+                crossAxisSpacing: 14,
+                mainAxisSpacing: 14,
+              ),
+              delegate: SliverChildBuilderDelegate((context, i) {
+                final t = tables[i];
+                final selected = _selected.contains(t.id);
+                return _TableCard(
+                  table: t,
+                  qrUrl: session.api.tableQrUrl(t.id, size: 256),
+                  selected: selected,
+                  selecting: _selecting,
+                  busy: _pending.contains(t.id),
+                  onTap: _selecting ? () => _toggleSelection(t) : () => _showQr(t),
+                  onLongPress: () => _toggleSelection(t),
+                  onActiveChanged: (v) => _toggleActive(t, v),
+                  theme: theme,
+                );
+              }, childCount: tables.length),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Stat extends StatelessWidget {
+  const _Stat({required this.value, required this.label});
+
+  final String value;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          value,
+          style: theme.textTheme.headlineMedium?.copyWith(color: PlatterColors.cream, fontWeight: FontWeight.w700),
+        ),
+        Text(label, style: theme.textTheme.bodyMedium?.copyWith(color: PlatterColors.cream.withValues(alpha: 0.7))),
+      ],
+    );
+  }
+}
+
+class _TableCard extends StatelessWidget {
+  const _TableCard({
+    required this.table,
+    required this.qrUrl,
+    required this.selected,
+    required this.selecting,
+    required this.busy,
+    required this.onTap,
+    required this.onLongPress,
+    required this.onActiveChanged,
+    required this.theme,
+  });
+
+  final DiningTable table;
+  final String qrUrl;
+  final bool selected;
+  final bool selecting;
+  final bool busy;
+  final VoidCallback onTap;
+  final VoidCallback onLongPress;
+  final ValueChanged<bool> onActiveChanged;
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = theme.colorScheme;
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: selected ? scheme.primary : scheme.outlineVariant, width: selected ? 2 : 1),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        onLongPress: onLongPress,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 14, 8, 6),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Center(
+                  child: Stack(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: scheme.outlineVariant),
+                        ),
+                        child: Opacity(
+                          opacity: table.active ? 1 : 0.35,
+                          child: _QrImage(url: qrUrl, size: 116),
+                        ),
+                      ),
+                      if (selecting)
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: Icon(
+                            selected ? Icons.check_circle_rounded : Icons.radio_button_unchecked,
+                            color: selected ? scheme.primary : scheme.outline,
+                          ),
+                        ),
+                    ],
                   ),
-            title: Text(t.label),
-            subtitle: Text(
-              t.active ? t.menuUrl : 'Inactiva · el QR no mostrará la carta',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            trailing: Switch(
-              value: t.active,
-              onChanged: _pending.contains(t.id) ? null : (v) => _toggleActive(t, v),
-            ),
-          );
-        },
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                table.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.titleLarge?.copyWith(fontSize: 18),
+              ),
+              Row(
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: table.active ? PlatterColors.huacatayLight : scheme.outline,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      table.active ? 'Activa' : 'Inactiva',
+                      style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                    ),
+                  ),
+                  Transform.scale(
+                    scale: 0.8,
+                    child: Switch(value: table.active, onChanged: busy || selecting ? null : onActiveChanged),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -341,10 +500,7 @@ class _QrDialog extends StatelessWidget {
             if (!table.active)
               Padding(
                 padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  'Esta mesa está inactiva.',
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
-                ),
+                child: Text('Esta mesa está inactiva.', style: TextStyle(color: Theme.of(context).colorScheme.error)),
               ),
           ],
         ),
