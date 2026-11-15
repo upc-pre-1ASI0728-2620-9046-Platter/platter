@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:platter_admin/main.dart';
 import 'package:platter_admin/state/session.dart';
+import 'package:platter_admin/widgets/brand.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -25,7 +26,7 @@ void main() {
   testWidgets('sin sesión muestra el login', (tester) async {
     final session = await pumpApp(tester);
     expect(session.isAuthenticated, isFalse);
-    expect(find.text('Platter'), findsOneWidget);
+    expect(find.byType(PlatterLogo), findsOneWidget);
     expect(find.text('Iniciar sesión'), findsOneWidget);
     expect(find.text('¿Nuevo en Platter? Registra tu restaurante'), findsOneWidget);
   });

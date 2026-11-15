@@ -1,11 +1,11 @@
 {
-    "name": "Platter Admin",
+    "name": "Platter",
     "short_name": "Platter",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#C0532F",
-    "description": "Platter — administración de la carta digital",
+    "background_color": "#FCF7F1",
+    "theme_color": "#F27321",
+    "description": "Platter — panel del restaurante para tu carta en Realidad Aumentada",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

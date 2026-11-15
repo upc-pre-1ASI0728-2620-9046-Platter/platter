@@ -141,7 +141,7 @@ class _Sidebar extends StatelessWidget {
                 children: [
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: PlatterLogo(size: 34, onDark: true, subtitle: 'PANEL DEL RESTAURANTE'),
+                    child: PlatterLogo(size: 46, onDark: true, subtitle: 'PANEL DEL RESTAURANTE'),
                   ),
                   const SizedBox(height: 28),
                   if (restaurant != null)

@@ -29,7 +29,7 @@ class AuthLayout extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     if (leading != null) Align(alignment: Alignment.centerLeft, child: leading!),
-                    if (!wide) ...[const Center(child: PlatterLogo(size: 40)), const SizedBox(height: 28)],
+                    if (!wide) ...[const Center(child: PlatterLogo(size: 54)), const SizedBox(height: 28)],
                     Text(title, style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w600)),
                     const SizedBox(height: 6),
                     Text(
@@ -99,17 +99,13 @@ class _BrandPanel extends StatelessWidget {
       child: Stack(
         children: [
           const Positioned.fill(child: PlateRings(opacity: 0.07)),
-          Positioned(
-            right: -80,
-            bottom: -80,
-            child: Opacity(opacity: 0.9, child: PlatterMark(size: 320, onDark: true)),
-          ),
+          Positioned(right: -80, bottom: -80, child: Opacity(opacity: 0.22, child: PlatterMark(size: 320))),
           Padding(
             padding: const EdgeInsets.fromLTRB(56, 48, 56, 48),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const PlatterLogo(size: 38, onDark: true),
+                const PlatterLogo(size: 52, onDark: true),
                 const Spacer(),
                 Text(
                   'Tu carta,\nsobre la mesa de\ntus clientes.',

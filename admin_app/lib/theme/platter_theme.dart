@@ -1,32 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Identidad visual de Platter: terracota (cerámica, fuego), verde huacatay y ají amarillo
-/// sobre fondo crema. Titulares en Fraunces (serif gastronómica), texto en Inter.
+/// Identidad visual de Platter, alineada con el logo: naranja de la campana, café espresso y crema,
+/// con verde huacatay y ají amarillo como acentos. Titulares en Fraunces (serif gastronómica), texto en Inter.
 class PlatterColors {
   PlatterColors._();
 
-  static const terracotta = Color(0xFFB8502B);
-  static const terracottaDeep = Color(0xFF8A3518);
-  static const ember = Color(0xFFE07A4F);
+  static const terracotta = Color(0xFFCC4F16);
+  static const terracottaDeep = Color(0xFFA93F10);
+  static const ember = Color(0xFFF27321);
   static const huacatay = Color(0xFF1F4D3A);
   static const huacatayDeep = Color(0xFF12301F);
   static const huacatayLight = Color(0xFF2E6B52);
   static const aji = Color(0xFFE6A532);
-  static const cream = Color(0xFFF8F2EA);
-  static const ink = Color(0xFF2A1E17);
+  static const cream = Color(0xFFFCF7F1);
+  static const ink = Color(0xFF2B1712);
 
   /// Degradado de marca para héroes y avatares.
   static const brandGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFFC85D33), Color(0xFF8A3518)],
+    colors: [Color(0xFFEE6A22), Color(0xFFB53D0D)],
   );
 
   static const sidebarGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [Color(0xFF1F4D3A), Color(0xFF12301F)],
+    colors: [Color(0xFF3A2219), Color(0xFF21130D)],
   );
 }
 
@@ -40,7 +40,7 @@ ColorScheme _scheme(Brightness b) {
       ? base.copyWith(
           primary: PlatterColors.terracotta,
           onPrimary: Colors.white,
-          primaryContainer: const Color(0xFFF9DED1),
+          primaryContainer: const Color(0xFFFDE3D2),
           onPrimaryContainer: const Color(0xFF3B1407),
           secondary: PlatterColors.huacatay,
           onSecondary: Colors.white,
@@ -62,7 +62,7 @@ ColorScheme _scheme(Brightness b) {
           outlineVariant: const Color(0xFFEADFD3),
         )
       : base.copyWith(
-          primary: const Color(0xFFF0936B),
+          primary: const Color(0xFFFF8A4C),
           onPrimary: const Color(0xFF3B1407),
           primaryContainer: const Color(0xFF6A2A12),
           onPrimaryContainer: const Color(0xFFFFDBCC),

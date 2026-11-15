@@ -60,7 +60,7 @@ class _PlatterAdminAppState extends State<PlatterAdminApp> {
     return SessionScope(
       session: widget.session,
       child: MaterialApp(
-        title: 'Platter Admin',
+        title: 'Platter',
         debugShowCheckedModeBanner: false,
         navigatorKey: _navigatorKey,
         scaffoldMessengerKey: _messengerKey,

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 520" width="600" height="520" role="img" aria-label="Platter"><title>Platter</title>
+  <defs>
+    <linearGradient id="m-dome" x1="0.2" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#FF9A4A"/>
+      <stop offset="0.55" stop-color="#F27321"/>
+      <stop offset="1" stop-color="#E2471A"/>
+    </linearGradient>
+    <linearGradient id="m-domeMono" x1="0.2" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F6DCC8"/>
+    </linearGradient>
+  </defs>
+  <path d="M112 116 V64 a22 22 0 0 1 22 -22 H184" fill="none" stroke="#F27321" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M416 42 H466 a22 22 0 0 1 22 22 V116" fill="none" stroke="#F27321" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M488 404 V456 a22 22 0 0 1 -22 22 H416" fill="none" stroke="#F27321" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M184 478 H134 a22 22 0 0 1 -22 -22 V404" fill="none" stroke="#F27321" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  <ellipse cx="300" cy="378" rx="128" ry="16" fill="#E2471A" opacity="0.16"/>
+  <path d="M58 320 A242 54 0 0 1 542 320" fill="none" stroke="#F27321" stroke-width="12" stroke-linecap="round" opacity="0.85"/>
+  <rect x="289" y="146" width="22" height="26" rx="6" fill="#E2471A"/>
+  <circle cx="300" cy="140" r="21" fill="url(#m-dome)"/>
+  <path d="M132 322 A168 160 0 0 1 468 322 Z" fill="url(#m-dome)"/>
+  <ellipse cx="226" cy="232" rx="34" ry="17" transform="rotate(-38 226 232)" fill="#FFFFFF" opacity="0.42"/>
+  <rect x="118" y="316" width="364" height="18" rx="9" fill="#E2471A"/>
+  <path d="M58 320 A242 54 0 0 0 542 320" fill="none" stroke="#F27321" stroke-width="18" stroke-linecap="round"/></svg>

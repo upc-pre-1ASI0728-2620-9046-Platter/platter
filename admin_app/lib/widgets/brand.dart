@@ -4,42 +4,24 @@ import 'package:flutter/material.dart';
 
 import '../theme/platter_theme.dart';
 
-/// Isotipo de Platter: un plato visto desde arriba (tres círculos concéntricos).
+/// Isotipo de Platter: la campana con su órbita dentro del marco de escaneo (AR).
+/// Los archivos se generan con `tools/brand` (`npm run build`).
 class PlatterMark extends StatelessWidget {
-  const PlatterMark({super.key, this.size = 32, this.onDark = false});
+  const PlatterMark({super.key, this.size = 32});
 
+  /// Alto del isotipo (la imagen mantiene su proporción 600×520).
   final double size;
-  final bool onDark;
 
   @override
-  Widget build(BuildContext context) => CustomPaint(
-    size: Size.square(size),
-    painter: _MarkPainter(onDark: onDark),
-  );
+  Widget build(BuildContext context) =>
+      Image.asset('assets/brand/mark.png', height: size, filterQuality: FilterQuality.medium, semanticLabel: 'Platter');
 }
 
-class _MarkPainter extends CustomPainter {
-  _MarkPainter({required this.onDark});
-
-  final bool onDark;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final c = size.center(Offset.zero);
-    final r = size.shortestSide / 2;
-    canvas.drawCircle(c, r * 0.94, Paint()..color = onDark ? PlatterColors.ember : PlatterColors.terracotta);
-    canvas.drawCircle(c, r * 0.6, Paint()..color = PlatterColors.cream);
-    canvas.drawCircle(c, r * 0.34, Paint()..color = onDark ? PlatterColors.aji : PlatterColors.huacatay);
-  }
-
-  @override
-  bool shouldRepaint(_MarkPainter old) => old.onDark != onDark;
-}
-
-/// Logotipo completo (isotipo + nombre).
+/// Logotipo completo. Sobre fondos oscuros (o en tema oscuro) usa la versión con letras crema.
 class PlatterLogo extends StatelessWidget {
   const PlatterLogo({super.key, this.size = 32, this.onDark = false, this.subtitle});
 
+  /// Alto del logotipo.
   final double size;
   final bool onDark;
   final String? subtitle;
@@ -47,34 +29,26 @@ class PlatterLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = onDark ? PlatterColors.cream : theme.colorScheme.onSurface;
-    return Row(
+    final dark = onDark || theme.brightness == Brightness.dark;
+    final logo = Image.asset(
+      dark ? 'assets/brand/logo-dark.png' : 'assets/brand/logo.png',
+      height: size,
+      filterQuality: FilterQuality.medium,
+      semanticLabel: 'Platter',
+    );
+    if (subtitle == null) return logo;
+    final color = dark ? PlatterColors.cream : theme.colorScheme.onSurface;
+    return Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        PlatterMark(size: size, onDark: onDark),
-        SizedBox(width: size * 0.34),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Platter',
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontSize: size * 0.82,
-                height: 1,
-                fontWeight: FontWeight.w700,
-                color: color,
-              ),
-            ),
-            if (subtitle != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 3),
-                child: Text(
-                  subtitle!,
-                  style: theme.textTheme.labelSmall?.copyWith(color: color.withValues(alpha: 0.7), letterSpacing: 0.6),
-                ),
-              ),
-          ],
+        logo,
+        Padding(
+          padding: EdgeInsets.only(top: 6, left: size * 1.2),
+          child: Text(
+            subtitle!,
+            style: theme.textTheme.labelSmall?.copyWith(color: color.withValues(alpha: 0.7), letterSpacing: 0.6),
+          ),
         ),
       ],
     );

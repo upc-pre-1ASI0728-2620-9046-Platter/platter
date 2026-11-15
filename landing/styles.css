@@ -1,15 +1,15 @@
 /* Platter · Landing (EP01). CSS plano, sin framework. Paleta compartida con /m/ (WebAR). */
 :root {
-  --terracotta: #b24a25;
-  --terracotta-strong: #963b1b;
-  --terracotta-soft: #f6dccf;
+  --terracotta: #cc4f16;
+  --terracotta-strong: #a93f10;
+  --terracotta-soft: #fde3d2;
   --green: #1f4d3a;
   --green-2: #2c6a50;
   --green-soft: #dcebe2;
-  --cream: #fbf4ea;
+  --cream: #fcf7f1;
   --cream-2: #f4ebdf;
   --surface: #ffffff;
-  --ink: #2a1e17;
+  --ink: #2b1712;
   --muted: #6b5b50;
   --line: #e7dacb;
   --danger: #a3261c;
@@ -23,9 +23,9 @@
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --terracotta: #e8835c;
-    --terracotta-strong: #f29a76;
-    --terracotta-soft: #3a2219;
+    --terracotta: #ff8a4c;
+    --terracotta-strong: #ffa372;
+    --terracotta-soft: #3d2216;
     --green: #8fc7a8;
     --green-2: #a9d6bd;
     --green-soft: #1d3329;
@@ -176,8 +176,8 @@ model-viewer { display: block; width: 100%; height: clamp(280px, 42vw, 420px); b
 /* Secciones */
 .section { padding: 4.5rem 0; }
 .section--tinted { background: var(--cream-2); }
-.section--dark { background: #1f2f27; color: #f5ebdd; }
-@media (prefers-color-scheme: dark) { .section--dark { background: #13201a; } }
+.section--dark { background: linear-gradient(160deg, #3a2219, #22140e); color: #f5ebdd; }
+@media (prefers-color-scheme: dark) { .section--dark { background: linear-gradient(160deg, #2a1810, #170d09); } }
 .section__title { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.8rem, 3.6vw, 2.6rem); margin-bottom: 1rem; }
 .section__lead { color: var(--muted); max-width: 44rem; margin-bottom: 2rem; }
 
@@ -297,6 +297,9 @@ input[aria-invalid="true"] { border-color: var(--danger); }
 .site-footer__inner { display: grid; gap: 1.5rem; }
 @media (min-width: 760px) { .site-footer__inner { grid-template-columns: 2fr 1fr 1fr; } .site-footer__copy { grid-column: 1 / -1; } }
 .logo--footer { font-size: 1.2rem; margin-bottom: .5rem; }
+.logo__img { display: block; height: 34px; width: auto; }
+.logo--footer .logo__img { height: 30px; }
+.logo picture { display: block; }
 .site-footer__nav { display: flex; flex-direction: column; gap: .5rem; }
 .site-footer__nav a, .site-footer__contact a { color: var(--muted); text-decoration: none; font-weight: 600; }
 .site-footer__nav a:hover, .site-footer__contact a:hover { color: var(--ink); }

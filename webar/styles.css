@@ -1,14 +1,14 @@
 /* Platter · Carta del comensal (WebAR). Mobile-first, sin framework. */
 :root {
-  --terracotta: #b24a25;
-  --terracotta-strong: #963b1b;
-  --terracotta-soft: #f6dccf;
+  --terracotta: #cc4f16;
+  --terracotta-strong: #a93f10;
+  --terracotta-soft: #fde3d2;
   --green: #1f4d3a;
   --green-soft: #dcebe2;
-  --cream: #fbf4ea;
+  --cream: #fcf7f1;
   --surface: #ffffff;
   --surface-2: #f4ebdf;
-  --ink: #2a1e17;
+  --ink: #2b1712;
   --muted: #6b5b50;
   --line: #e7dacb;
   --danger: #a3261c;
@@ -25,9 +25,9 @@
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --terracotta: #e8835c;
-    --terracotta-strong: #f29a76;
-    --terracotta-soft: #3a2219;
+    --terracotta: #ff8a4c;
+    --terracotta-strong: #ffa372;
+    --terracotta-soft: #3d2216;
     --green: #8fc7a8;
     --green-soft: #1d3329;
     --cream: #17120f;
@@ -272,3 +272,7 @@ model-viewer {
 }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 .mv-ar-btn { position: absolute; left: 12px; right: 12px; bottom: 12px; width: auto; box-shadow: 0 6px 18px rgba(0, 0, 0, .25); }
+
+/* Marca en el pie */
+.footer__brand { display: inline-flex; align-items: center; gap: .4rem; margin-bottom: .25rem; }
+.footer__brand img { display: block; height: 20px; width: auto; }
